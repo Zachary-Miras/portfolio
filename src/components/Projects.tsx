@@ -153,9 +153,10 @@ function BrowserPreview({ screenshots }: { screenshots: string[] }) {
 
 	const startAutoScroll = useCallback(() => {
 		if (screenshots.length <= 1) return;
+		if (intervalRef.current) clearInterval(intervalRef.current);
 		intervalRef.current = setInterval(() => {
 			setCurrent((c) => (c + 1) % screenshots.length);
-		}, 1500);
+		}, 3000); // Increased from 1.5s to 3.0s
 	}, [screenshots.length]);
 
 	const stopAutoScroll = useCallback(() => {
@@ -165,6 +166,26 @@ function BrowserPreview({ screenshots }: { screenshots: string[] }) {
 		}
 		setCurrent(0);
 	}, []);
+
+	const nextSlide = useCallback(
+		(e?: React.MouseEvent | React.TouchEvent) => {
+			if (e) {
+				e.stopPropagation();
+				e.preventDefault();
+			}
+			if (screenshots.length <= 1) return;
+			setCurrent((c) => (c + 1) % screenshots.length);
+
+			// Reset timer so it doesn't jump twice quickly
+			if (intervalRef.current) {
+				clearInterval(intervalRef.current);
+				intervalRef.current = setInterval(() => {
+					setCurrent((c) => (c + 1) % screenshots.length);
+				}, 3000);
+			}
+		},
+		[screenshots.length],
+	);
 
 	useEffect(() => {
 		return () => {
@@ -213,7 +234,8 @@ function BrowserPreview({ screenshots }: { screenshots: string[] }) {
 			onMouseEnter={startAutoScroll}
 			onMouseLeave={stopAutoScroll}
 			onTouchStart={startAutoScroll}
-			onTouchEnd={stopAutoScroll}>
+			onTouchEnd={stopAutoScroll}
+			onClick={nextSlide}>
 			{/* Browser bar */}
 			<div className='flex items-center gap-1.5 px-3 py-2 bg-dark-950/80 border-b border-white/6'>
 				<div className='w-2.5 h-2.5 rounded-full bg-red-500/60' />
