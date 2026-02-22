@@ -152,10 +152,13 @@ function BrowserPreview({ screenshots }: { screenshots: string[] }) {
 
 	const startAutoScroll = useCallback(() => {
 		if (screenshots.length <= 1) return;
+
+		setCurrent((c) => (c === 0 ? 1 : c));
+
 		if (intervalRef.current) clearInterval(intervalRef.current);
 		intervalRef.current = setInterval(() => {
 			setCurrent((c) => (c + 1) % screenshots.length);
-		}, 1500); // Remis à 1.5s comme demandé
+		}, 1500);
 	}, [screenshots.length]);
 
 	const stopAutoScroll = useCallback(() => {
