@@ -155,7 +155,7 @@ function BrowserPreview({ screenshots }: { screenshots: string[] }) {
 		if (intervalRef.current) clearInterval(intervalRef.current);
 		intervalRef.current = setInterval(() => {
 			setCurrent((c) => (c + 1) % screenshots.length);
-		}, 3000);
+		}, 1500); // Remis à 1.5s comme demandé
 	}, [screenshots.length]);
 
 	const stopAutoScroll = useCallback(() => {
@@ -167,20 +167,17 @@ function BrowserPreview({ screenshots }: { screenshots: string[] }) {
 	}, []);
 
 	const nextSlide = useCallback(
-		(e?: React.MouseEvent | React.TouchEvent) => {
-			if (e) {
-				e.stopPropagation();
-				e.preventDefault();
-			}
+		(e?: React.MouseEvent) => {
 			if (screenshots.length <= 1) return;
+
 			setCurrent((c) => (c + 1) % screenshots.length);
 
-			// Reset timer so it doesn't jump twice quickly
+			// Reset du chrono 1.5s pour éviter les sauts doubles
 			if (intervalRef.current) {
 				clearInterval(intervalRef.current);
 				intervalRef.current = setInterval(() => {
 					setCurrent((c) => (c + 1) % screenshots.length);
-				}, 3000);
+				}, 1500);
 			}
 		},
 		[screenshots.length],
@@ -232,8 +229,6 @@ function BrowserPreview({ screenshots }: { screenshots: string[] }) {
 			className='rounded-xl overflow-hidden border border-white/6 bg-dark-900/60 cursor-pointer'
 			onMouseEnter={startAutoScroll}
 			onMouseLeave={stopAutoScroll}
-			onTouchStart={startAutoScroll}
-			onTouchEnd={stopAutoScroll}
 			onClick={nextSlide}>
 			{/* Browser bar */}
 			<div className='flex items-center gap-1.5 px-3 py-2 bg-dark-950/80 border-b border-white/6'>
@@ -257,8 +252,7 @@ function BrowserPreview({ screenshots }: { screenshots: string[] }) {
 						className={`object-cover object-top transition-opacity duration-500 ${
 							idx === current ? "opacity-100" : "opacity-0"
 						}`}
-						quality={85}
-						// Let Next.js lazy load them when the user scrolls near the section
+						// Removed quality={85} to fix Next.js warning and use default 75
 					/>
 				))}
 
