@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslation } from "@/context/LanguageContext";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { Award, ExternalLink, Github, Medal, Trophy } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -211,7 +211,9 @@ function BrowserPreview({ screenshots }: { screenshots: string[] }) {
 		<div
 			className='rounded-xl overflow-hidden border border-white/6 bg-dark-900/60 cursor-pointer'
 			onMouseEnter={startAutoScroll}
-			onMouseLeave={stopAutoScroll}>
+			onMouseLeave={stopAutoScroll}
+			onTouchStart={startAutoScroll}
+			onTouchEnd={stopAutoScroll}>
 			{/* Browser bar */}
 			<div className='flex items-center gap-1.5 px-3 py-2 bg-dark-950/80 border-b border-white/6'>
 				<div className='w-2.5 h-2.5 rounded-full bg-red-500/60' />
@@ -221,35 +223,34 @@ function BrowserPreview({ screenshots }: { screenshots: string[] }) {
 			</div>
 
 			{/* Screenshot area */}
-			<div className='relative aspect-video overflow-hidden'>
-				<AnimatePresence mode='wait'>
-					<motion.div
-						key={current}
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						exit={{ opacity: 0 }}
-						transition={{ duration: 0.4 }}
-						className='absolute inset-0'>
-						<Image
-							src={screenshots[current]}
-							alt={`Screenshot ${current + 1}`}
-							fill
-							sizes='(max-width: 768px) 100vw, 45vw'
-							className='object-cover object-top'
-							priority={current === 0}
-							quality={80}
-						/>
-					</motion.div>
-				</AnimatePresence>
+			<div className='relative aspect-video overflow-hidden bg-dark-900/40'>
+				{/* Render all images immediately but control visibility via CSS opacity */}
+				{/* This forces the browser to download them before they are needed */}
+				{screenshots.map((src, idx) => (
+					<Image
+						key={src}
+						src={src}
+						alt={`Screenshot ${idx + 1}`}
+						fill
+						sizes='(max-width: 768px) 100vw, 45vw'
+						className={`object-cover object-top transition-opacity duration-500 ${
+							idx === current ? "opacity-100" : "opacity-0"
+						}`}
+						quality={85}
+						// Let Next.js lazy load them when the user scrolls near the section
+					/>
+				))}
 
 				{/* Progress dots */}
 				{screenshots.length > 1 && (
-					<div className='absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5'>
+					<div className='absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10'>
 						{screenshots.map((_, i) => (
 							<div
 								key={i}
 								className={`h-1.5 rounded-full transition-all duration-300 ${
-									i === current ? "w-4 bg-violet-400" : "w-1.5 bg-white/30"
+									i === current
+										? "w-4 bg-violet-400"
+										: "w-1.5 bg-white/30 backdrop-blur-md"
 								}`}
 							/>
 						))}
