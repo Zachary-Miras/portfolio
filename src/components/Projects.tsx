@@ -3,6 +3,7 @@
 import { useTranslation } from "@/context/LanguageContext";
 import { AnimatePresence, motion } from "framer-motion";
 import { Award, ExternalLink, Github, Medal, Trophy } from "lucide-react";
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const projects = [
@@ -222,16 +223,23 @@ function BrowserPreview({ screenshots }: { screenshots: string[] }) {
 			{/* Screenshot area */}
 			<div className='relative aspect-video overflow-hidden'>
 				<AnimatePresence mode='wait'>
-					<motion.img
+					<motion.div
 						key={current}
-						src={screenshots[current]}
-						alt={`Screenshot ${current + 1}`}
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
 						transition={{ duration: 0.4 }}
-						className='absolute inset-0 w-full h-full object-cover object-top'
-					/>
+						className='absolute inset-0'>
+						<Image
+							src={screenshots[current]}
+							alt={`Screenshot ${current + 1}`}
+							fill
+							sizes='(max-width: 768px) 100vw, 45vw'
+							className='object-cover object-top'
+							priority={current === 0}
+							quality={80}
+						/>
+					</motion.div>
 				</AnimatePresence>
 
 				{/* Progress dots */}
