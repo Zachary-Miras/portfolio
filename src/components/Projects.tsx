@@ -45,14 +45,14 @@ const projects = [
 			"Vitest",
 		],
 		screenshots: [
-			"/demos/Spa/spa-1.png",
-			"/demos/Spa/spa-2.png",
-			"/demos/Spa/spa-3.png",
-			"/demos/Spa/spa-4.png",
-			"/demos/Spa/spa-5.png",
-			"/demos/Spa/spa-6.png",
-			"/demos/Spa/spa-7.png",
-			"/demos/Spa/spa-8.png",
+			"/demos/Spa/spa-1.webp",
+			"/demos/Spa/spa-2.webp",
+			"/demos/Spa/spa-3.webp",
+			"/demos/Spa/spa-4.webp",
+			"/demos/Spa/spa-5.webp",
+			"/demos/Spa/spa-6.webp",
+			"/demos/Spa/spa-7.webp",
+			"/demos/Spa/spa-8.webp",
 		],
 		liveUrl: "https://spa-inky-one.vercel.app/",
 		githubUrl: "https://github.com/Zachary-Miras/Spa",
@@ -146,7 +146,6 @@ const projects = [
 	},
 ];
 
-/* ─── Browser-frame preview with auto-scroll on hover ─── */
 function BrowserPreview({ screenshots }: { screenshots: string[] }) {
 	const [current, setCurrent] = useState(0);
 	const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -156,7 +155,7 @@ function BrowserPreview({ screenshots }: { screenshots: string[] }) {
 		if (intervalRef.current) clearInterval(intervalRef.current);
 		intervalRef.current = setInterval(() => {
 			setCurrent((c) => (c + 1) % screenshots.length);
-		}, 3000); // Increased from 1.5s to 3.0s
+		}, 3000);
 	}, [screenshots.length]);
 
 	const stopAutoScroll = useCallback(() => {
