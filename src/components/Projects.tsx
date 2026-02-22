@@ -2,24 +2,8 @@
 
 import { useTranslation } from "@/context/LanguageContext";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-	Award,
-	ChevronLeft,
-	ChevronRight,
-	ExternalLink,
-	Github,
-	Image as ImageIcon,
-	Medal,
-	Play,
-	Trophy,
-} from "lucide-react";
-import { useState } from "react";
-
-interface Preview {
-	type: "image" | "video";
-	src: string;
-	label: { fr: string; en: string };
-}
+import { Award, ExternalLink, Github, Medal, Trophy } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const projects = [
 	{
@@ -59,9 +43,16 @@ const projects = [
 			"Zod",
 			"Vitest",
 		],
-		// ── Ajoute tes GIFs/images/vidéos dans public/demos/ ──
-		// Ex: { type: "video", src: "/demos/spa-flow.mp4", label: { fr: "Flow réservation", en: "Booking flow" } },
-		previews: [] as Preview[],
+		screenshots: [
+			"/demos/Spa/spa-1.png",
+			"/demos/Spa/spa-2.png",
+			"/demos/Spa/spa-3.png",
+			"/demos/Spa/spa-4.png",
+			"/demos/Spa/spa-5.png",
+			"/demos/Spa/spa-6.png",
+			"/demos/Spa/spa-7.png",
+			"/demos/Spa/spa-8.png",
+		],
 		liveUrl: "https://spa-inky-one.vercel.app/",
 		githubUrl: "https://github.com/Zachary-Miras/Spa",
 		color: "from-amber-400 to-yellow-500",
@@ -103,7 +94,7 @@ const projects = [
 			"NextAuth",
 			"Google Maps API",
 		],
-		previews: [] as Preview[],
+		screenshots: [] as string[],
 		liveUrl: "https://realestate-mu-five.vercel.app/",
 		githubUrl: "https://github.com/Zachary-Miras/Real-Estate",
 		color: "from-gray-300 to-gray-400",
@@ -146,7 +137,7 @@ const projects = [
 			"JWT",
 			"APScheduler",
 		],
-		previews: [] as Preview[],
+		screenshots: [] as string[],
 		liveUrl: null,
 		githubUrl: "https://github.com/Zachary-Miras",
 		color: "from-amber-600 to-amber-700",
@@ -154,88 +145,109 @@ const projects = [
 	},
 ];
 
-function PreviewCarousel({
-	previews,
-	lang,
-}: {
-	previews: Preview[];
-	lang: "fr" | "en";
-}) {
+/* ─── Browser-frame preview with auto-scroll on hover ─── */
+function BrowserPreview({ screenshots }: { screenshots: string[] }) {
 	const [current, setCurrent] = useState(0);
+	const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-	if (previews.length === 0) return null;
+	const startAutoScroll = useCallback(() => {
+		if (screenshots.length <= 1) return;
+		intervalRef.current = setInterval(() => {
+			setCurrent((c) => (c + 1) % screenshots.length);
+		}, 1500);
+	}, [screenshots.length]);
 
-	const prev = () => setCurrent((c) => (c === 0 ? previews.length - 1 : c - 1));
-	const next = () => setCurrent((c) => (c === previews.length - 1 ? 0 : c + 1));
+	const stopAutoScroll = useCallback(() => {
+		if (intervalRef.current) {
+			clearInterval(intervalRef.current);
+			intervalRef.current = null;
+		}
+		setCurrent(0);
+	}, []);
 
-	const item = previews[current];
+	useEffect(() => {
+		return () => {
+			if (intervalRef.current) clearInterval(intervalRef.current);
+		};
+	}, []);
 
-	return (
-		<div className='relative mb-5 rounded-xl overflow-hidden bg-dark-900/80 border border-white/[0.06]'>
-			{/* Media */}
-			<div className='relative aspect-video w-full'>
-				<AnimatePresence mode='wait'>
-					<motion.div
-						key={current}
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						exit={{ opacity: 0 }}
-						transition={{ duration: 0.3 }}
-						className='absolute inset-0'>
-						{item.type === "video" ? (
-							<video
-								src={item.src}
-								autoPlay
-								loop
-								muted
-								playsInline
-								className='w-full h-full object-cover'
-							/>
-						) : (
-							<img
-								src={item.src}
-								alt={item.label[lang]}
-								className='w-full h-full object-cover'
-							/>
-						)}
-					</motion.div>
-				</AnimatePresence>
-
-				{/* Label overlay */}
-				<div className='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-4 py-3'>
-					<div className='flex items-center justify-between'>
-						<div className='flex items-center gap-2'>
-							{item.type === "video" ? (
-								<Play size={12} className='text-violet-400' />
-							) : (
-								<ImageIcon size={12} className='text-violet-400' />
-							)}
-							<span className='text-xs text-white/70'>{item.label[lang]}</span>
+	if (screenshots.length === 0) {
+		// Placeholder when no screenshots yet
+		return (
+			<div className='rounded-xl overflow-hidden border border-white/6 bg-dark-900/60'>
+				{/* Browser bar */}
+				<div className='flex items-center gap-1.5 px-3 py-2 bg-dark-950/80 border-b border-white/6'>
+					<div className='w-2.5 h-2.5 rounded-full bg-red-500/60' />
+					<div className='w-2.5 h-2.5 rounded-full bg-yellow-500/60' />
+					<div className='w-2.5 h-2.5 rounded-full bg-green-500/60' />
+					<div className='ml-3 flex-1 h-5 rounded-md bg-white/4 max-w-[200px]' />
+				</div>
+				{/* Placeholder content */}
+				<div className='aspect-video flex items-center justify-center bg-dark-900/40'>
+					<div className='text-center'>
+						<div className='w-12 h-12 mx-auto mb-3 rounded-xl bg-white/4 flex items-center justify-center'>
+							<svg
+								className='w-6 h-6 text-white/20'
+								fill='none'
+								viewBox='0 0 24 24'
+								stroke='currentColor'>
+								<path
+									strokeLinecap='round'
+									strokeLinejoin='round'
+									strokeWidth={1.5}
+									d='M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z'
+								/>
+							</svg>
 						</div>
-						{previews.length > 1 && (
-							<span className='text-xs text-white/40'>
-								{current + 1} / {previews.length}
-							</span>
-						)}
+						<p className='text-xs text-white/20'>Screenshots à venir</p>
 					</div>
 				</div>
 			</div>
+		);
+	}
 
-			{/* Navigation arrows */}
-			{previews.length > 1 && (
-				<>
-					<button
-						onClick={prev}
-						className='absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center text-white/70 hover:text-white hover:bg-black/70 transition-all'>
-						<ChevronLeft size={16} />
-					</button>
-					<button
-						onClick={next}
-						className='absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center text-white/70 hover:text-white hover:bg-black/70 transition-all'>
-						<ChevronRight size={16} />
-					</button>
-				</>
-			)}
+	return (
+		<div
+			className='rounded-xl overflow-hidden border border-white/6 bg-dark-900/60 cursor-pointer'
+			onMouseEnter={startAutoScroll}
+			onMouseLeave={stopAutoScroll}>
+			{/* Browser bar */}
+			<div className='flex items-center gap-1.5 px-3 py-2 bg-dark-950/80 border-b border-white/6'>
+				<div className='w-2.5 h-2.5 rounded-full bg-red-500/60' />
+				<div className='w-2.5 h-2.5 rounded-full bg-yellow-500/60' />
+				<div className='w-2.5 h-2.5 rounded-full bg-green-500/60' />
+				<div className='ml-3 flex-1 h-5 rounded-md bg-white/4 max-w-[200px]' />
+			</div>
+
+			{/* Screenshot area */}
+			<div className='relative aspect-video overflow-hidden'>
+				<AnimatePresence mode='wait'>
+					<motion.img
+						key={current}
+						src={screenshots[current]}
+						alt={`Screenshot ${current + 1}`}
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0 }}
+						transition={{ duration: 0.4 }}
+						className='absolute inset-0 w-full h-full object-cover object-top'
+					/>
+				</AnimatePresence>
+
+				{/* Progress dots */}
+				{screenshots.length > 1 && (
+					<div className='absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5'>
+						{screenshots.map((_, i) => (
+							<div
+								key={i}
+								className={`h-1.5 rounded-full transition-all duration-300 ${
+									i === current ? "w-4 bg-violet-400" : "w-1.5 bg-white/30"
+								}`}
+							/>
+						))}
+					</div>
+				)}
+			</div>
 		</div>
 	);
 }
@@ -254,7 +266,7 @@ export default function Projects() {
 					{t.projects.title[lang]} <span className='gradient-text'>.</span>
 				</motion.h2>
 
-				<div className='space-y-8'>
+				<div className='space-y-10'>
 					{projects.map((project, idx) => (
 						<motion.div
 							key={project.title}
@@ -275,82 +287,90 @@ export default function Projects() {
 									`0 0 0 0 ${project.glowColor}`;
 							}}>
 							<div className='p-6 md:p-8'>
-								{/* Header */}
-								<div className='flex items-start justify-between mb-4'>
-									<div className='flex items-center gap-3'>
-										<div
-											className={`w-10 h-10 rounded-xl bg-linear-to-br ${project.color} flex items-center justify-center text-dark-950`}>
-											<project.icon size={20} strokeWidth={2.5} />
-										</div>
-										<div>
-											<h3 className='font-heading text-xl font-bold text-white group-hover:text-white/90'>
-												{project.title}
-											</h3>
-											<p className='text-sm text-white/40'>
-												{project.subtitle[lang]}
-											</p>
-										</div>
-									</div>
+								{/* Horizontal layout: preview left, content right */}
+								<div className='grid md:grid-cols-[1fr_1.2fr] gap-6 md:gap-8'>
+									{/* Left — Browser preview */}
+									<BrowserPreview screenshots={project.screenshots} />
 
-									<div className='flex items-center gap-2'>
-										{project.liveUrl ? (
-											<a
-												href={project.liveUrl}
-												target='_blank'
-												rel='noopener noreferrer'
-												className='flex items-center gap-1.5 text-sm text-violet-400 hover:text-violet-300 transition-colors px-3 py-1.5 rounded-lg hover:bg-violet-500/10'>
-												<ExternalLink size={14} />
-												<span className='hidden sm:inline'>
-													{t.projects.live[lang]}
+									{/* Right — Content */}
+									<div className='flex flex-col'>
+										{/* Header */}
+										<div className='flex items-start justify-between mb-3'>
+											<div className='flex items-center gap-3'>
+												<div
+													className={`w-9 h-9 rounded-lg bg-linear-to-br ${project.color} flex items-center justify-center text-dark-950`}>
+													<project.icon size={18} strokeWidth={2.5} />
+												</div>
+												<div>
+													<h3 className='font-heading text-lg font-bold text-white group-hover:text-white/90'>
+														{project.title}
+													</h3>
+													<p className='text-xs text-white/40'>
+														{project.subtitle[lang]}
+													</p>
+												</div>
+											</div>
+
+											<div className='flex items-center gap-1.5'>
+												{project.liveUrl ? (
+													<a
+														href={project.liveUrl}
+														target='_blank'
+														rel='noopener noreferrer'
+														className='flex items-center gap-1 text-xs text-violet-400 hover:text-violet-300 transition-colors px-2.5 py-1.5 rounded-lg hover:bg-violet-500/10'>
+														<ExternalLink size={12} />
+														<span className='hidden sm:inline'>
+															{t.projects.live[lang]}
+														</span>
+													</a>
+												) : (
+													<span className='text-[10px] text-white/25 px-2.5 py-1.5'>
+														{t.projects.not_deployed[lang]}
+													</span>
+												)}
+												<a
+													href={project.githubUrl}
+													target='_blank'
+													rel='noopener noreferrer'
+													className='flex items-center gap-1 text-xs text-white/50 hover:text-white transition-colors px-2.5 py-1.5 rounded-lg hover:bg-white/6'>
+													<Github size={12} />
+													<span className='hidden sm:inline'>
+														{t.projects.code[lang]}
+													</span>
+												</a>
+											</div>
+										</div>
+
+										{/* Description */}
+										<p className='text-white/45 text-sm leading-relaxed mb-4'>
+											{project.description[lang]}
+										</p>
+
+										{/* Highlights */}
+										<ul className='space-y-1.5 mb-4'>
+											{project.highlights[lang].map((h, i) => (
+												<li
+													key={i}
+													className='flex items-start gap-2 text-sm text-white/40'>
+													<span className='text-violet-400 mt-0.5 shrink-0'>
+														▸
+													</span>
+													{h}
+												</li>
+											))}
+										</ul>
+
+										{/* Tech tags */}
+										<div className='flex flex-wrap gap-1.5 mt-auto'>
+											{project.tech.map((techItem) => (
+												<span
+													key={techItem}
+													className='px-2 py-0.5 text-[11px] font-medium text-white/45 bg-white/4 rounded border border-white/6'>
+													{techItem}
 												</span>
-											</a>
-										) : (
-											<span className='text-xs text-white/30 px-3 py-1.5'>
-												{t.projects.not_deployed[lang]}
-											</span>
-										)}
-										<a
-											href={project.githubUrl}
-											target='_blank'
-											rel='noopener noreferrer'
-											className='flex items-center gap-1.5 text-sm text-white/50 hover:text-white transition-colors px-3 py-1.5 rounded-lg hover:bg-white/6'>
-											<Github size={14} />
-											<span className='hidden sm:inline'>
-												{t.projects.code[lang]}
-											</span>
-										</a>
+											))}
+										</div>
 									</div>
-								</div>
-
-								{/* Demo Preview Carousel */}
-								<PreviewCarousel previews={project.previews} lang={lang} />
-
-								{/* Description */}
-								<p className='text-white/50 text-sm leading-relaxed mb-5'>
-									{project.description[lang]}
-								</p>
-
-								{/* Highlights */}
-								<ul className='grid sm:grid-cols-2 gap-x-6 gap-y-2 mb-6'>
-									{project.highlights[lang].map((h, i) => (
-										<li
-											key={i}
-											className='flex items-start gap-2 text-sm text-white/40'>
-											<span className='text-violet-400 mt-1 shrink-0'>▸</span>
-											{h}
-										</li>
-									))}
-								</ul>
-
-								{/* Tech tags */}
-								<div className='flex flex-wrap gap-2'>
-									{project.tech.map((techItem) => (
-										<span
-											key={techItem}
-											className='px-2.5 py-1 text-xs font-medium text-white/50 bg-white/4 rounded-md border border-white/6'>
-											{techItem}
-										</span>
-									))}
 								</div>
 							</div>
 						</motion.div>
