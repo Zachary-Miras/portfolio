@@ -54,7 +54,7 @@ const projects = [
 			"/demos/Spa/spa-7.webp",
 			"/demos/Spa/spa-8.webp",
 		],
-		liveUrl: "https://spa-inky-one.vercel.app/",
+		liveUrl: "https://spa.zachary-miras.dev/",
 		githubUrl: "https://github.com/Zachary-Miras/Spa",
 		color: "from-amber-400 to-yellow-500",
 		glowColor: "rgba(251, 191, 36, 0.15)",
@@ -95,8 +95,19 @@ const projects = [
 			"NextAuth",
 			"Google Maps API",
 		],
-		screenshots: [] as string[],
-		liveUrl: "https://realestate-mu-five.vercel.app/",
+		screenshots: [
+			"/demos/real-estate/realestate-1.webp",
+			"/demos/real-estate/realestate-2.webp",
+			"/demos/real-estate/realestate-3.webp",
+			"/demos/real-estate/realestate-4.webp",
+			"/demos/real-estate/realestate-5.webp",
+			"/demos/real-estate/realestate-6.webp",
+			"/demos/real-estate/realestate-7.webp",
+			"/demos/real-estate/realestate-8.webp",
+			"/demos/real-estate/realestate-9.webp",
+			"/demos/real-estate/realestate-10.webp",
+		],
+		liveUrl: "https://realestate.zachary-miras.dev/",
 		githubUrl: "https://github.com/Zachary-Miras/Real-Estate",
 		color: "from-gray-300 to-gray-400",
 		glowColor: "rgba(156, 163, 175, 0.15)",
@@ -243,8 +254,6 @@ function BrowserPreview({ screenshots }: { screenshots: string[] }) {
 
 			{/* Screenshot area */}
 			<div className='relative aspect-video overflow-hidden bg-dark-900/40'>
-				{/* Render all images immediately but control visibility via CSS opacity */}
-				{/* This forces the browser to download them before they are needed */}
 				{screenshots.map((src, idx) => (
 					<Image
 						key={src}
@@ -255,7 +264,6 @@ function BrowserPreview({ screenshots }: { screenshots: string[] }) {
 						className={`object-cover object-top transition-opacity duration-500 ${
 							idx === current ? "opacity-100" : "opacity-0"
 						}`}
-						// Removed quality={85} to fix Next.js warning and use default 75
 					/>
 				))}
 

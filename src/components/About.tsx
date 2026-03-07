@@ -12,16 +12,19 @@ import {
 } from "lucide-react";
 
 const techStack = {
-	Frontend: [
-		"React",
-		"Next.js",
-		"TypeScript",
-		"JavaScript",
-		"Tailwind CSS",
-		"Material UI",
+	Frontend: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Material UI"],
+	Backend: ["Node.js", "Flask", "Python", "Prisma", "JWT", "REST API"],
+	Database: ["MongoDB", "SQL"],
+	Tools: [
+		"Git",
+		"Docker",
+		"GitHub Actions",
+		"Vercel",
+		"Vitest",
+		"Zod",
+		"Postman",
 	],
-	Backend: ["Flask", "Python", "Node.js", "Prisma", "MongoDB", "JWT"],
-	Tools: ["Git", "GitHub Actions", "Stripe", "Vercel", "Vitest", "Zod"],
+	Services: ["Stripe", "Calendly", "n8n"],
 };
 
 const fadeInUp = {
