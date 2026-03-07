@@ -11,6 +11,7 @@ const projects = [
 		rank: 1,
 		icon: Trophy,
 		title: "Spa Booking App",
+		badge: undefined as { fr: string; en: string } | undefined,
 		subtitle: {
 			fr: "Plateforme de Réservation Fullstack",
 			en: "Fullstack Reservation Platform",
@@ -116,6 +117,10 @@ const projects = [
 		rank: 3,
 		icon: Award,
 		title: "Library Management System",
+		badge: {
+			fr: "Projet de Licence",
+			en: "Academic Project",
+		},
 		subtitle: {
 			fr: "Système de Gestion de Bibliothèque Fullstack",
 			en: "Fullstack Library Reservation System",
@@ -336,12 +341,19 @@ export default function Projects() {
 													className={`w-9 h-9 rounded-lg bg-linear-to-br ${project.color} flex items-center justify-center text-dark-950`}>
 													<project.icon size={18} strokeWidth={2.5} />
 												</div>
-												<div>
-													<h3 className='font-heading text-lg font-bold text-white group-hover:text-white/90'>
-														{project.title}
-													</h3>
+												<div className='flex flex-col gap-1'>
+													<div className='flex items-center gap-3 flex-wrap'>
+														<h3 className='font-heading text-lg font-bold text-white group-hover:text-white/90 leading-tight'>
+															{project.title}
+														</h3>
+														{project.badge && (
+															<span className='px-2.5 py-0.5 text-[10px] uppercase tracking-wider font-semibold text-violet-300/80 bg-violet-500/10 rounded-full border border-violet-500/20'>
+																{project.badge[lang as "fr" | "en"]}
+															</span>
+														)}
+													</div>
 													<p className='text-xs text-white/40'>
-														{project.subtitle[lang]}
+														{project.subtitle[lang as "fr" | "en"]}
 													</p>
 												</div>
 											</div>
