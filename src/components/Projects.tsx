@@ -107,6 +107,7 @@ const projects = [
 			"/demos/Real-Estate/realestate-8.webp",
 			"/demos/Real-Estate/realestate-9.webp",
 			"/demos/Real-Estate/realestate-10.webp",
+			"/demos/Real-Estate/realestate-11.webp",
 		],
 		liveUrl: "https://realestate.zachary-miras.dev/",
 		githubUrl: "https://github.com/Zachary-Miras/Real-Estate",
