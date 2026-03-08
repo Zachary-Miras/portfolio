@@ -155,6 +155,7 @@ const projects = [
 			"APScheduler",
 		],
 		screenshots: [
+			"/demos/Library/library-1.webp",
 			"/demos/Library/library-2.webp",
 			"/demos/Library/library-3.webp",
 			"/demos/Library/library-4.webp",
