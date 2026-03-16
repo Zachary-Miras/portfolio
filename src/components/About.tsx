@@ -13,8 +13,8 @@ import {
 
 const techStack = {
 	Frontend: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Material UI"],
-	Backend: ["Node.js", "Flask", "Python", "Prisma", "JWT", "REST API"],
-	Database: ["MongoDB", "SQL"],
+	Backend: ["Node.js", "Flask", "Python", "Prisma", "JWT", "REST API", "WebSockets"],
+	Database: ["MongoDB", "PostgreSQL", "SQL"],
 	Tools: [
 		"Git",
 		"Docker",
@@ -24,7 +24,7 @@ const techStack = {
 		"Zod",
 		"Postman",
 	],
-	Services: ["Stripe", "Calendly", "n8n"],
+	Services: ["Stripe", "Calendly", "Pusher", "EmailJS", "n8n"],
 };
 
 const fadeInUp = {

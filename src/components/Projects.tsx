@@ -2,14 +2,14 @@
 
 import { useTranslation } from "@/context/LanguageContext";
 import { motion } from "framer-motion";
-import { Award, ExternalLink, Github, Medal, Trophy } from "lucide-react";
+import { BookOpen, Building2, CalendarCheck, ExternalLink, Github, Kanban } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const projects = [
 	{
 		rank: 1,
-		icon: Trophy,
+		icon: CalendarCheck,
 		title: "Spa Booking App",
 		badge: undefined as { fr: string; en: string } | undefined,
 		subtitle: {
@@ -41,9 +41,10 @@ const projects = [
 			"Tailwind CSS",
 			"MongoDB",
 			"Stripe",
-			"Calendly",
+			"Calendly API",
 			"Zod",
 			"Vitest",
+			"REST API",
 		],
 		screenshots: [
 			"/demos/Spa/spa-1.webp",
@@ -57,13 +58,67 @@ const projects = [
 		],
 		liveUrl: "https://spa.zachary-miras.dev/",
 		githubUrl: "https://github.com/Zachary-Miras/Spa",
-		color: "from-amber-400 to-yellow-500",
-		glowColor: "rgba(251, 191, 36, 0.15)",
+		color: "from-[#1d4134] to-[#0f2b22]",
+		iconColor: "text-emerald-300",
+		glowColor: "rgba(29, 65, 52, 0.3)",
 	},
 	{
 		rank: 2,
-		icon: Medal,
+		icon: Kanban,
+		title: "FlowBoard",
+		badge: undefined as { fr: string; en: string } | undefined,
+		subtitle: {
+			fr: "Kanban Collaboratif Temps Réel",
+			en: "Real-Time Collaborative Kanban",
+		},
+		description: {
+			fr: "Application Kanban fullstack avec collaboration en temps réel. Drag & drop des tâches entre colonnes, labels, priorités, dates d'échéance et synchronisation instantanée via WebSockets.",
+			en: "Fullstack Kanban app with real-time collaboration. Drag & drop tasks across columns, labels, priorities, due dates and instant sync via WebSockets.",
+		},
+		highlights: {
+			fr: [
+				"Temps réel via Pusher (WebSockets)",
+				"Drag & drop avec UI optimiste (zéro latence perçue)",
+				"Authentification JWT + gestion multi-boards",
+				"ORM Prisma avec PostgreSQL",
+			],
+			en: [
+				"Real-time sync via Pusher (WebSockets)",
+				"Drag & drop with optimistic UI (zero perceived latency)",
+				"JWT auth + multi-board management",
+				"Prisma ORM with PostgreSQL",
+			],
+		},
+		tech: [
+			"Next.js",
+			"TypeScript",
+			"React",
+			"Tailwind CSS",
+			"Prisma",
+			"PostgreSQL",
+			"Node.js",
+			"Pusher",
+			"WebSockets",
+			"JWT",
+		],
+		screenshots: [
+			"/demos/Flowboard/flowboard_1.webp",
+			"/demos/Flowboard/flowboard_2.webp",
+			"/demos/Flowboard/flowboard_3.webp",
+			"/demos/Flowboard/flowboard_4.webp",
+			"/demos/Flowboard/flowboard_5.webp",
+		],
+		liveUrl: "https://flowboard.zachary-miras.dev/",
+		githubUrl: "https://github.com/Zachary-Miras/Flowboard",
+		color: "from-[#00aece] to-[#0098b8]",
+		iconColor: "text-dark-950",
+		glowColor: "rgba(0, 174, 206, 0.15)",
+	},
+	{
+		rank: 3,
+		icon: Building2,
 		title: "Real Estate Platform",
+		badge: undefined as { fr: string; en: string } | undefined,
 		subtitle: {
 			fr: "Application Immobilière Moderne",
 			en: "Modern Real Estate Web App",
@@ -95,6 +150,7 @@ const projects = [
 			"Prisma",
 			"NextAuth",
 			"Google Maps API",
+			"EmailJS",
 		],
 		screenshots: [
 			"/demos/Real-Estate/realestate-1.webp",
@@ -111,12 +167,13 @@ const projects = [
 		],
 		liveUrl: "https://realestate.zachary-miras.dev/",
 		githubUrl: "https://github.com/Zachary-Miras/Real-Estate",
-		color: "from-gray-300 to-gray-400",
-		glowColor: "rgba(156, 163, 175, 0.15)",
+		color: "from-amber-400 to-yellow-600",
+		iconColor: "text-dark-950",
+		glowColor: "rgba(201, 162, 77, 0.15)",
 	},
 	{
-		rank: 3,
-		icon: Award,
+		rank: 4,
+		icon: BookOpen,
 		title: "Library Management System",
 		badge: {
 			fr: "Projet de Licence",
@@ -154,6 +211,7 @@ const projects = [
 			"MongoDB",
 			"JWT",
 			"APScheduler",
+			"REST API",
 		],
 		screenshots: [
 			"/demos/Library/library-1.webp",
@@ -165,8 +223,9 @@ const projects = [
 		],
 		liveUrl: null,
 		githubUrl: "https://github.com/Zachary-Miras",
-		color: "from-amber-600 to-amber-700",
-		glowColor: "rgba(180, 83, 9, 0.15)",
+		color: "from-[#101620] to-[#101620]",
+		iconColor: "text-indigo-300",
+		glowColor: "rgba(16, 22, 32, 0.4)",
 	},
 ];
 
@@ -346,20 +405,13 @@ export default function Projects() {
 										<div className='flex items-start justify-between mb-3'>
 											<div className='flex items-center gap-3'>
 												<div
-													className={`w-9 h-9 rounded-lg bg-linear-to-br ${project.color} flex items-center justify-center text-dark-950`}>
+													className={`w-9 h-9 rounded-lg bg-linear-to-br ${project.color} flex items-center justify-center ${project.iconColor}`}>
 													<project.icon size={18} strokeWidth={2.5} />
 												</div>
 												<div className='flex flex-col gap-1'>
-													<div className='flex items-center gap-3 flex-wrap'>
-														<h3 className='font-heading text-lg font-bold text-white group-hover:text-white/90 leading-tight'>
-															{project.title}
-														</h3>
-														{project.badge && (
-															<span className='px-2.5 py-0.5 text-[10px] uppercase tracking-wider font-semibold text-violet-300/80 bg-violet-500/10 rounded-full border border-violet-500/20'>
-																{project.badge[lang as "fr" | "en"]}
-															</span>
-														)}
-													</div>
+													<h3 className='font-heading text-lg font-bold text-white group-hover:text-white/90 leading-tight'>
+														{project.title}
+													</h3>
 													<p className='text-xs text-white/40'>
 														{project.subtitle[lang as "fr" | "en"]}
 													</p>
@@ -395,6 +447,13 @@ export default function Projects() {
 												</a>
 											</div>
 										</div>
+
+										{/* Badge */}
+										{project.badge && (
+											<span className='self-start mb-3 px-2.5 py-0.5 text-[10px] uppercase tracking-wider font-semibold text-violet-300/80 bg-violet-500/10 rounded-full border border-violet-500/20'>
+												{project.badge[lang as "fr" | "en"]}
+											</span>
+										)}
 
 										{/* Description */}
 										<p className='text-white/45 text-sm leading-relaxed mb-4'>
